@@ -1,0 +1,27 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:ui="using:FluentAvalonia.UI.Controls"
+			 xmlns:ic="using:FluentIcons.Avalonia.Fluent"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="MultiOperationExecutioner.SettingsPage">
+	<ScrollViewer>
+		<StackPanel Margin="10">
+			<TextBlock Text="设置" Margin="5" FontSize="36" FontWeight="Bold"/>
+			<ui:SettingsExpander HorizontalAlignment="Stretch" Margin="0,10,0,0" IsClickEnabled="False">
+				<ui:SettingsExpander.Header>
+					<Grid>
+						<StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+							<ic:FluentIcon Icon="ClipboardBulletList" Height="32" Width="32" FontSize="32" VerticalAlignment="Center"/>
+							<TextBlock Text="绑定右键菜单(启用IFEO/取消IFEO)" VerticalAlignment="Center" Margin="10,0,0,0"/>
+						</StackPanel>
+						<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+							<ToggleSwitch Click="EnableMouseMenu_Toggled" x:Name="EnableMouseMenu" VerticalAlignment="Center" Margin="5,0,0,0"/>
+						</StackPanel>
+					</Grid>
+				</ui:SettingsExpander.Header>
+			</ui:SettingsExpander>
+		</StackPanel>
+	</ScrollViewer>
+</UserControl>

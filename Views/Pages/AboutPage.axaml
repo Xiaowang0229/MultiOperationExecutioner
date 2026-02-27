@@ -4,7 +4,7 @@
 			 xmlns:md="https://github.com/whistyun/Markdown.Avalonia"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:ui="using:FluentAvalonia.UI.Controls"
-			 xmlns:local="clr-namespace:RocketLauncherRemake.Utils;assembly=RocketLauncherRemake"
+			 xmlns:local="clr-namespace:MultiOperationExecutioner.Utils;assembly=MultiOperationExecutioner"
 			 xmlns:ic="using:FluentIcons.Avalonia.Fluent"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="MultiOperationExecutioner.AboutPage">
@@ -102,7 +102,7 @@
 							<TextBlock Text="访问本仓库" VerticalAlignment="Center"/>
 						</StackPanel>
 						<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-							<HyperlinkButton Content="https://github.com/Xiaowang0229/MultiGameLauncher" x:Name="RepoLink" Click="RepoUrl_Click"/>
+							<HyperlinkButton Content="https://github.com/Xiaowang0229/MultiOperationExecutioner" x:Name="RepoLink" Click="RepoUrl_Click"/>
 						</StackPanel>
 					</Grid>
 					<Separator/>
@@ -111,7 +111,7 @@
 							<TextBlock Text="上报漏洞信息" VerticalAlignment="Center"/>
 						</StackPanel>
 						<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-							<HyperlinkButton Content="https://github.com/Xiaowang0229/MultiGameLauncher/issues" x:Name="IssueLink" Click="IssueUrl_Click"/>
+							<HyperlinkButton Content="https://github.com/Xiaowang0229/MultiOperationExecutioner/issues" x:Name="IssueLink" Click="IssueUrl_Click"/>
 						</StackPanel>
 					</Grid>
 				</StackPanel>
@@ -133,10 +133,8 @@
 					<HyperlinkButton Content="Avalonia.Desktop" Click="Url_Click" Tag="https://github.com/AvaloniaUI/Avalonia"/>
 					<HyperlinkButton Content="Avalonia.Themes.Fluent" Click="Url_Click" Tag="https://github.com/AvaloniaUI/Avalonia"/>
 					<HyperlinkButton Content="Markdown.Avalonia" Click="Url_Click" Tag="https://github.com/whistyun/Markdown.Avalonia"/>
-					<HyperlinkButton Content="FFmpegVideoPlayer.Avalonia" Click="Url_Click" Tag="https://github.com/jojomondag/Avalonia.VlcVideoPlayer"/>
 					<HyperlinkButton Content="FluentAvaloniaUI (本程序所使用的UI)" Click="Url_Click" Tag="https://github.com/amwx/FluentAvalonia"/>
 					<HyperlinkButton Content="FluentIcons.Avalonia.Fluent" Click="Url_Click" Tag="https://github.com/davidxuang/FluentIcons"/>
-					<HyperlinkButton Content="Hardcodet.Notifyicon.Wpf" Click="Url_Click" Tag="https://github.com/hardcodet/wpf-notifyicon"/>
 					<HyperlinkButton Content="Ookii.Dialogs.Wpf" Click="Url_Click" Tag="https://github.com/ookii-dialogs/ookii-dialogs-wpf"/>
 				</StackPanel>
 			</ui:SettingsExpander>
@@ -154,7 +152,7 @@
 
 			</ui:SettingsExpander.Header>
 			<StackPanel Margin="5" Orientation="Horizontal">
-				<TextBox x:Name="EULABox" IsReadOnly="True"/>
+				<TextBox x:Name="EULABox" IsReadOnly="True" HorizontalAlignment="Stretch"/>
 				
 			</StackPanel>
 		</ui:SettingsExpander>
