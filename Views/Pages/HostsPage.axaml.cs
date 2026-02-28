@@ -10,4 +10,9 @@ public partial class HostsPage : UserControl
     {
         InitializeComponent();
     }
+
+    private static StackPanel EditStackPanel()
+    {
+
+    }
 }
