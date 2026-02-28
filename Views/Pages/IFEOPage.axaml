@@ -6,7 +6,7 @@
              x:Class="MultiOperationExecutioner.IFEOPage">
 	<ScrollViewer>
 		<StackPanel Margin="10">
-			<TextBlock Text="IFEO 管理" Margin="5" FontSize="36" FontWeight="Bold"/>
+			<TextBlock Text="软件操作管理" Margin="5" FontSize="36" FontWeight="Bold"/>
 		</StackPanel>
 	</ScrollViewer>
 </UserControl>

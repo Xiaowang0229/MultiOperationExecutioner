@@ -13,14 +13,19 @@
 	<Grid>
 		<ui:NavigationView x:Name="RootNavi" IsBackButtonVisible="True" SelectionChanged="RootNavi_SelectionChanged"  IsSettingsVisible="False" IsBackEnabled="False" ExpandedModeThresholdWidth="21474836">
 			<ui:NavigationView.MenuItems>
-				<ui:NavigationViewItem Content="IFEO 管理">
+				<ui:NavigationViewItem Content="软件操作管理">
 					<ui:NavigationViewItem.IconSource>
 						<ic:FluentIconSource Icon="AppGeneric" FontSize="32"/>
 					</ui:NavigationViewItem.IconSource>
 				</ui:NavigationViewItem>
-				<ui:NavigationViewItem Content="Hosts 管理">
+				<ui:NavigationViewItem Content="网页操作管理">
 					<ui:NavigationViewItem.IconSource>
 						<ic:FluentIconSource Icon="Globe" FontSize="32"/>
+					</ui:NavigationViewItem.IconSource>
+				</ui:NavigationViewItem>
+				<ui:NavigationViewItem Content="其他操作管理">
+					<ui:NavigationViewItem.IconSource>
+						<ic:FluentIconSource Icon="TagEdit" FontSize="32"/>
 					</ui:NavigationViewItem.IconSource>
 				</ui:NavigationViewItem>
 			</ui:NavigationView.MenuItems>

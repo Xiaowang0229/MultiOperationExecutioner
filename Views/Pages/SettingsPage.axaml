@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:ui="using:FluentAvalonia.UI.Controls"
 			 xmlns:ic="using:FluentIcons.Avalonia.Fluent"
+			 Loaded="Page_Loaded"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="MultiOperationExecutioner.SettingsPage">
 	<ScrollViewer>

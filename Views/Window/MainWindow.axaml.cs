@@ -27,6 +27,10 @@ namespace MultiOperationExecutioner
             {
                 RootFrame.Navigate(typeof(HostsPage));
             }
+            else if (RootNavi.SelectedItem == RootNavi.MenuItems[2])
+            {
+                RootFrame.Navigate(typeof(GPEditPage));
+            }
             else if (RootNavi.SelectedItem == RootNavi.FooterMenuItems[0])
             {
                 RootFrame.Navigate(typeof(SettingsPage));

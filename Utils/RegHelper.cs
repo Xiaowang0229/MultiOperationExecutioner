@@ -66,5 +66,13 @@ namespace MultiOperationExecutioner.Utils
                 Variables._MainWindow.ShowMessageAsync("读取注册表失败", $"{ex}");
             }
         }
+
+        public static bool RegKeyExists(RegistryKey Key,string subKeyPath)
+        {
+            using (var key = Key.OpenSubKey(subKeyPath))
+            {
+                return key != null;
+            }
+        }
     }
 }
