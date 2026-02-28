@@ -41,7 +41,7 @@ namespace MultiOperationExecutioner.Utils
             var client = new HttpClient();
             try
             {
-                var content = await client.GetStringAsync("https://gitee.com/xiaowangupdate/update-service/raw/master/MultiGameLauncher", Variables.UpdateCTS.Token);
+                var content = await client.GetStringAsync("https://gitee.com/xiaowangupdate/update-service/raw/master/MultiOperationExecutioner", Variables.UpdateCTS.Token);
                 var updcfg = Json.ReadJson<UpdateConfig>(content);
                 
                 if (updcfg.UpdateVersion != Variables.Version)

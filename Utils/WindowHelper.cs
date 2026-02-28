@@ -13,6 +13,7 @@ namespace MultiOperationExecutioner.Utils
     public static partial class Variables
     {
         public static MainWindow _MainWindow = new MainWindow();
+        public static string[] Args;
     }
     public static class WindowHelper
     {

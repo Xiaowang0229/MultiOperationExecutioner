@@ -23,6 +23,49 @@
 					</Grid>
 				</ui:SettingsExpander.Header>
 			</ui:SettingsExpander>
+			<ui:SettingsExpander HorizontalAlignment="Stretch" Margin="0,10,0,0" IsClickEnabled="False">
+				<ui:SettingsExpander.Header>
+					<Grid>
+						<StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+							<ic:FluentIcon Icon="ArrowUpload" Height="32" Width="32" FontSize="32"/>
+							<TextBlock Text="启动时检测更新" VerticalAlignment="Center" Margin="10,0,0,0" />
+						</StackPanel>
+						<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+							<ToggleSwitch Click="StartUpCheckUpdate_Toggled" x:Name="StartUpCheckUpdate" VerticalAlignment="Center" Margin="5,0,0,0"/>
+						</StackPanel>
+
+					</Grid>
+				</ui:SettingsExpander.Header>
+			</ui:SettingsExpander>
+			<ui:SettingsExpander HorizontalAlignment="Stretch" Margin="0,10,0,0" IsClickEnabled="False">
+				<ui:SettingsExpander.Header>
+					<Grid>
+						<StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+							<ic:FluentIcon Icon="ShieldLock" Height="32" Width="32" FontSize="32"/>
+							<TextBlock Text="安全选项" VerticalAlignment="Center" Margin="10,0,0,0" />
+						</StackPanel>
+						<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+							<Button x:Name="EnablePassword" Click="EnablePassword_Click" HorizontalAlignment="Center" Content="启用密码保护" Width="140" Margin="5,7.5,0,7.5"/>
+							<Button x:Name="DisablePassword" Click="DisablePassword_Click" HorizontalAlignment="Center" Content="取消密码保护" Width="140" Margin="5,7.5,0,7.5"/>
+						</StackPanel>
+
+					</Grid>
+				</ui:SettingsExpander.Header>
+			</ui:SettingsExpander>
+			<ui:SettingsExpander HorizontalAlignment="Stretch" Margin="0,10,0,0" IsClickEnabled="False">
+				<ui:SettingsExpander.Header>
+					<Grid>
+						<StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+							<ic:FluentIcon Icon="DocumentEdit" Height="32" Width="32" FontSize="32"/>
+							<TextBlock Text="配置项操作" VerticalAlignment="Center" Margin="10,0,0,0" />
+						</StackPanel>
+						<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+							<Button Click="ResConfig_Click" Content="恢复默认" Foreground="Red" Width="120" Margin="5,7.5,0,7.5"/>
+						</StackPanel>
+
+					</Grid>
+				</ui:SettingsExpander.Header>
+			</ui:SettingsExpander>
 		</StackPanel>
 	</ScrollViewer>
 </UserControl>

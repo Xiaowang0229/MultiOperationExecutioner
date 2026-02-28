@@ -6,7 +6,8 @@
              x:Class="MultiOperationExecutioner.HostsPage">
 	<ScrollViewer>
 		<StackPanel Margin="10">
-			<TextBlock Text="网页操作管理" Margin="5" FontSize="36" FontWeight="Bold"/>
+			<TextBlock Text="Hosts 管理" Margin="5" FontSize="36" FontWeight="Bold"/>
+			<S
 		</StackPanel>
 	</ScrollViewer>
 </UserControl>
