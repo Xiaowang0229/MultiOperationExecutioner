@@ -17,9 +17,9 @@ namespace MultiOperationExecutioner;
 public partial class IFEOPage : UserControl
 {
     public static bool IsValidatedPassword = false;
-    private Button bt2p = new Button { IsEnabled=false,Width = 120, Content = "保存", Margin = new Thickness(5), VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center };
+    private Button bt2p;
 
-public IFEOPage()
+    public IFEOPage()
     {
         InitializeComponent();
     }
@@ -46,6 +46,7 @@ public IFEOPage()
 
     private async void Page_Loaded(object sender,RoutedEventArgs e)
     {
+        bt2p = new Button { IsEnabled = false, Width = 120, Content = "保存", Margin = new Thickness(5), VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center }; ;
         IsValidatedPassword = false;
         RootStackPanel.Children.Clear();
         Tip.IsVisible = true;
@@ -92,20 +93,24 @@ public IFEOPage()
             {
                 if (RootStackPanel.Children[i] is StackPanel sp)
                 {
+                    if(sp.Tag is DelConfig sptag0)
+                    {
+
+                        if (RegHelper.RegKeyExists(Registry.LocalMachine, @$"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\{sptag0.ChangeConfig.TargetProgram}"))
+                        {
+
+                            RegHelper.DeleteRegeditKey(Registry.LocalMachine, @$"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\{sptag0.ChangeConfig.TargetProgram}");
+                                
+                        }
+                        
+                    }
                     if(sp.Tag is TagConfig sptag)
                     {
                         
-                        if(sptag.ChangeKind == TagKind.Delete)
+                        
+                        if (sptag.OriginalConfig.ExecuteProgramArgs != sptag.ChangeConfig.ExecuteProgramArgs || sptag.OriginalConfig.TargetProgram != sptag.ChangeConfig.TargetProgram)
                         {
-                            if (RegHelper.RegKeyExists(Registry.LocalMachine, @$"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\{sptag.ChangeConfig.TargetProgram}"))
-                            {
-                                RegHelper.DeleteRegeditKey(Registry.LocalMachine, @$"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\{sptag.ChangeConfig.TargetProgram}");
-                                continue;
-                            }
-                        }
-                        else if (sptag.ChangeKind == TagKind.Change && sptag.OriginalConfig.TargetProgram != sptag.ChangeConfig.TargetProgram)
-                        {
-                            System.Windows.MessageBox.Show(sptag.ChangeKind);
+                            
                             if (!string.IsNullOrEmpty(sptag.ChangeConfig.TargetProgram))
                             {
                                 RegHelper.WriteRegeditString(Registry.LocalMachine, @$"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\{sptag.ChangeConfig.TargetProgram}");
@@ -114,7 +119,7 @@ public IFEOPage()
 
 
 
-                                    RegHelper.WriteRegeditString(Registry.LocalMachine, @$"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\{sptag.ChangeConfig.TargetProgram}", "Debugger", $"\"{sptag.ChangeConfig.ExecuteProgramArgs}\"");
+                                    RegHelper.WriteRegeditString(Registry.LocalMachine, @$"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\{sptag.ChangeConfig.TargetProgram}", "Debugger", $"{sptag.ChangeConfig.ExecuteProgramArgs}");
 
                                 }
 
@@ -128,6 +133,8 @@ public IFEOPage()
                     }
                 }
             }
+            Variables._MainWindow.RootFrame.Navigate(typeof(SettingsPage));
+            Variables._MainWindow.RootFrame.Navigate(typeof(IFEOPage));
         }
         else
         {
@@ -138,6 +145,7 @@ public IFEOPage()
     private TextBox AddStackPanel(string TargetProgramArgs, string ExecuteProgramwithArguments, bool IsCreate = false)
     {
         var newifeoc = new IFEOConfig();
+        var oriifeoc = new IFEOConfig();
         var sp = new StackPanel { Margin = new Thickness(5), Orientation = Avalonia.Layout.Orientation.Horizontal, VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center };
         sp.Children.Add(new TextBlock { Text = "IFEO 目标应用(必填):", Margin = new Thickness(5), VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center });
         var tb = new TextBox { Margin = new Thickness(5), MinWidth = 150, Text = TargetProgramArgs, VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center };
@@ -153,7 +161,9 @@ public IFEOPage()
         var btx2 = new Button { Width = 120, Content = "解除管控", Margin = new Thickness(5), VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center };
         var bt3 = new Button { Width = 120, Content = "删除", Margin = new Thickness(5), VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,Foreground=new SolidColorBrush(Colors.Red) };
         sp.Children.Add(bt3);
-        sp.Tag = new TagConfig { ChangeKind = TagKind.Change, ChangeConfig = newifeoc,OriginalConfig = new IFEOConfig {TargetProgram = TargetProgramArgs } };
+        sp.Tag = null;
+        oriifeoc.ExecuteProgramArgs = ExecuteProgramwithArguments;
+        oriifeoc.TargetProgram = TargetProgramArgs;
 
         if (ExecuteProgramwithArguments.Contains($"{Environment.CurrentDirectory}\\{Process.GetCurrentProcess().ProcessName}.exe ExecutedMessage"))
         {
@@ -172,14 +182,14 @@ public IFEOPage()
         tb.TextChanged += (s, e) =>
         {
             newifeoc.TargetProgram = tb.Text;
-            sp.Tag = new TagConfig { ChangeKind = TagKind.Change, ChangeConfig = newifeoc };
+            sp.Tag = new TagConfig { ChangeKind = TagKind.Change, ChangeConfig = newifeoc,OriginalConfig=oriifeoc };
             bt2p.IsEnabled = true;
             
         };
         tb0.TextChanged += (s, e) =>
         {
             newifeoc.ExecuteProgramArgs = tb0.Text;
-            sp.Tag = new TagConfig { ChangeKind = TagKind.Change, ChangeConfig = newifeoc };
+            sp.Tag = new TagConfig { ChangeKind = TagKind.Change, ChangeConfig = newifeoc, OriginalConfig = oriifeoc };
             bt2p.IsEnabled = true;
         };
 
@@ -245,13 +255,13 @@ public IFEOPage()
                 if(await Variables._MainWindow.ShowMessageAsync("警告","确认删除该项吗?该操作不可逆"))
                 {
                     IsValidatedPassword = true;
-                    sp.Tag = new TagConfig
+                    sp.Tag = new DelConfig
                     {
                         ChangeKind = TagKind.Delete,
                         ChangeConfig = newifeoc
                     };
                     bt2p.IsEnabled = true;
-                    RootStackPanel.Children.Remove(sp);
+                    sp.IsVisible = false;
                 }
             }
             else
@@ -284,7 +294,14 @@ public class TagConfig
 {
     public required string ChangeKind { get; set; }
 
-    public IFEOConfig OriginalConfig { get; set; }
+    public required IFEOConfig OriginalConfig { get; set; }
+    public required IFEOConfig ChangeConfig { get; set; }
+}
+
+public class DelConfig
+{
+    public required string ChangeKind { get; set; }
+
     public required IFEOConfig ChangeConfig { get; set; }
 }
 

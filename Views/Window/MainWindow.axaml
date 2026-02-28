@@ -23,7 +23,7 @@
 						<ic:FluentIconSource Icon="Globe" FontSize="32"/>
 					</ui:NavigationViewItem.IconSource>
 				</ui:NavigationViewItem>
-				<ui:NavigationViewItem Content="其他操作管理">
+				<ui:NavigationViewItem Content="其他操作管理" IsVisible="false">
 					<ui:NavigationViewItem.IconSource>
 						<ic:FluentIconSource Icon="TagEdit" FontSize="32"/>
 					</ui:NavigationViewItem.IconSource>

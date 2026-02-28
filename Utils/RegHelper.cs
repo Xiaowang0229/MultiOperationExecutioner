@@ -97,9 +97,11 @@ namespace MultiOperationExecutioner.Utils
             try
             {
                 
-                
+                    
                     Root.DeleteSubKeyTree(KeyPath);
-                
+                    Root.DeleteSubKey(KeyPath,false);
+
+
             }
             catch (Exception ex)
             {
