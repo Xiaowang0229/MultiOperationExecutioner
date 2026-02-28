@@ -6,6 +6,7 @@ using Avalonia.Media;
 using Microsoft.Win32;
 using MultiOperationExecutioner.Utils;
 using System;
+using System.Collections;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -16,7 +17,9 @@ namespace MultiOperationExecutioner;
 public partial class IFEOPage : UserControl
 {
     public static bool IsValidatedPassword = false;
-    public IFEOPage()
+    private Button bt2p = new Button { IsEnabled=false,Width = 120, Content = "保存", Margin = new Thickness(5), VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center };
+
+public IFEOPage()
     {
         InitializeComponent();
     }
@@ -58,26 +61,101 @@ public partial class IFEOPage : UserControl
                 { AddStackPanel($"{s[i]}", $"{RegHelper.ReadRegeditString(Registry.LocalMachine, @$"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\{s[i]}", "Debugger")}"); }
             }
         }
+        var sp = new StackPanel { Margin = new Thickness(10), Orientation = Avalonia.Layout.Orientation.Horizontal, VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center };
+        var bt = new Button { Width = 120, Content = "放弃操作", Margin = new Thickness(5), VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center };
+        bt.Click += async(s,e) =>
+        {
+            
+                if(await Variables._MainWindow.ShowMessageAsync("警告","确认放弃当前所有改动吗?该操作不可逆"))
+                {
+                    Variables._MainWindow.RootFrame.Navigate(typeof(IFEOConfig));
+                }
+            
+        };
+        sp.Children.Add(bt);
+       
+        bt2p.Click += SaveButton_Click;
+        
+        bt2p.IsEnabled = false;
+        sp.Children.Add(bt2p);
+        RootStackPanel.Children.Add(sp);
         Tip.IsVisible = false;
+        await Task.Delay(50);
+        bt2p.IsEnabled = false;
     }
 
-    private TextBox AddStackPanel(string TargetProgramArgs,string ExecuteProgramwithArguments,bool IsCreate = false)
+    private void SaveButton_Click(object? sender, RoutedEventArgs e)
+    {
+        if(RegHelper.ValidatePassword())
+        {
+            for(int i = 0;i<RootStackPanel.Children.Count-1;i++)
+            {
+                if (RootStackPanel.Children[i] is StackPanel sp)
+                {
+                    if(sp.Tag is TagConfig sptag)
+                    {
+                        
+                        if(sptag.ChangeKind == TagKind.Delete)
+                        {
+                            if (RegHelper.RegKeyExists(Registry.LocalMachine, @$"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\{sptag.ChangeConfig.TargetProgram}"))
+                            {
+                                RegHelper.DeleteRegeditKey(Registry.LocalMachine, @$"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\{sptag.ChangeConfig.TargetProgram}");
+                                continue;
+                            }
+                        }
+                        else if (sptag.ChangeKind == TagKind.Change && sptag.OriginalConfig.TargetProgram != sptag.ChangeConfig.TargetProgram)
+                        {
+                            System.Windows.MessageBox.Show(sptag.ChangeKind);
+                            if (!string.IsNullOrEmpty(sptag.ChangeConfig.TargetProgram))
+                            {
+                                RegHelper.WriteRegeditString(Registry.LocalMachine, @$"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\{sptag.ChangeConfig.TargetProgram}");
+                                if (sptag.ChangeConfig.ExecuteProgramArgs != null)
+                                {
+
+
+
+                                    RegHelper.WriteRegeditString(Registry.LocalMachine, @$"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\{sptag.ChangeConfig.TargetProgram}", "Debugger", $"\"{sptag.ChangeConfig.ExecuteProgramArgs}\"");
+
+                                }
+
+
+                            }
+                            else
+                            {
+                                Variables._MainWindow.ShowMessageAsync("提示", "必填项不能为空");
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        else
+        {
+            Variables._MainWindow.ShowMessageAsync("提示", "验证失败,操作已取消");
+        }
+    }
+
+    private TextBox AddStackPanel(string TargetProgramArgs, string ExecuteProgramwithArguments, bool IsCreate = false)
     {
         var newifeoc = new IFEOConfig();
-        var sp = new StackPanel { Margin = new Thickness(5),Orientation=Avalonia.Layout.Orientation.Horizontal,VerticalAlignment=Avalonia.Layout.VerticalAlignment.Center };
-        sp.Children.Add(new TextBlock { Text="IFEO 目标应用(必填):" ,Margin=new Thickness(5), VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center });
-        var tb = new TextBox { Margin=new Thickness(5),MinWidth=150,Text=TargetProgramArgs, VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center };
+        var sp = new StackPanel { Margin = new Thickness(5), Orientation = Avalonia.Layout.Orientation.Horizontal, VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center };
+        sp.Children.Add(new TextBlock { Text = "IFEO 目标应用(必填):", Margin = new Thickness(5), VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center });
+        var tb = new TextBox { Margin = new Thickness(5), MinWidth = 150, Text = TargetProgramArgs, VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center };
         sp.Children.Add(tb);
-        var bt = new Button { Width=120,Content = "浏览...", Margin=new Thickness(5), VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center };
+        var bt = new Button { Width = 120, Content = "浏览...", Margin = new Thickness(5), VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center };
         sp.Children.Add(bt);
-        sp.Children.Add(new TextBlock { Text = "IFEO 转移应用及参数(可选):", Margin=new Thickness(5), VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center });
-        var tb0 = new TextBox { Margin=new Thickness(5), MinWidth = 150,Text=ExecuteProgramwithArguments, VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center };
+        sp.Children.Add(new TextBlock { Text = "IFEO 转移应用及参数(可选):", Margin = new Thickness(5), VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center });
+        var tb0 = new TextBox { Margin = new Thickness(5), MinWidth = 150, Text = ExecuteProgramwithArguments, VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center };
         sp.Children.Add(tb0);
-        var bt1 = new Button { Width = 120, Content = "浏览...", Margin=new Thickness(5), VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center };
+        var bt1 = new Button { Width = 120, Content = "浏览...", Margin = new Thickness(5), VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center };
         sp.Children.Add(bt1);
         var btx = new Button { Width = 120, Content = "加入管控", Margin = new Thickness(5), VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center };
         var btx2 = new Button { Width = 120, Content = "解除管控", Margin = new Thickness(5), VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center };
-        if(ExecuteProgramwithArguments == $"\"{Environment.CurrentDirectory}\\{Process.GetCurrentProcess().ProcessName}.exe\" \"ExecutedMessage\"")
+        var bt3 = new Button { Width = 120, Content = "删除", Margin = new Thickness(5), VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,Foreground=new SolidColorBrush(Colors.Red) };
+        sp.Children.Add(bt3);
+        sp.Tag = new TagConfig { ChangeKind = TagKind.Change, ChangeConfig = newifeoc,OriginalConfig = new IFEOConfig {TargetProgram = TargetProgramArgs } };
+
+        if (ExecuteProgramwithArguments.Contains($"{Environment.CurrentDirectory}\\{Process.GetCurrentProcess().ProcessName}.exe ExecutedMessage"))
         {
             sp.Children.Add(btx2);
             tb.IsEnabled = false;
@@ -89,19 +167,20 @@ public partial class IFEOPage : UserControl
         {
             sp.Children.Add(btx);
         }
-        var bt2 = new Button {  Width=120,Content = "确定", Margin=new Thickness(5), VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center };
 
-        sp.Children.Add(bt2);
-        var bt3 = new Button { Width = 120, Content = "删除", Margin=new Thickness(5),Foreground=new SolidColorBrush(Colors.Red), VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center };
-        sp.Children.Add(bt3);
-        
+
         tb.TextChanged += (s, e) =>
         {
             newifeoc.TargetProgram = tb.Text;
+            sp.Tag = new TagConfig { ChangeKind = TagKind.Change, ChangeConfig = newifeoc };
+            bt2p.IsEnabled = true;
+            
         };
         tb0.TextChanged += (s, e) =>
         {
             newifeoc.ExecuteProgramArgs = tb0.Text;
+            sp.Tag = new TagConfig { ChangeKind = TagKind.Change, ChangeConfig = newifeoc };
+            bt2p.IsEnabled = true;
         };
 
         bt.Click += (s, e) =>
@@ -128,14 +207,14 @@ public partial class IFEOPage : UserControl
             };
             if (dlg.ShowDialog() == true)
             {
-                tb0.Text = $"\"{dlg.FileName}\"";
+                tb0.Text = $"{dlg.FileName}";
             }
         };
 
         btx.Click += (s, e) =>
         {
-            
-            tb0.Text = $"\"{Environment.CurrentDirectory}\\{Process.GetCurrentProcess().ProcessName}.exe\" \"ExecutedMessage\"";
+
+            tb0.Text = $"{Environment.CurrentDirectory}\\{Process.GetCurrentProcess().ProcessName}.exe ExecutedMessage";
             tb.IsEnabled = false;
             bt.IsEnabled = false;
             bt1.IsEnabled = false;
@@ -157,48 +236,23 @@ public partial class IFEOPage : UserControl
                 sp.Children.Add(btx);
             }
         };
+
         
-        bt2.Click += (s, e) =>
-        {
-            
-            if (RegHelper.ValidatePassword())
-            {
-                if (!string.IsNullOrEmpty(newifeoc.TargetProgram))
-                {
-                    RegHelper.WriteRegeditString(Registry.LocalMachine, @$"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\{newifeoc.TargetProgram}");
-                    if (newifeoc.ExecuteProgramArgs != null)
-                    {
-
-
-
-                        RegHelper.WriteRegeditString(Registry.LocalMachine, @$"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\{newifeoc.TargetProgram}", "Debugger", $"\"{newifeoc.ExecuteProgramArgs}\"");
-
-                    }
-
-
-                }
-                else
-                {
-                    Variables._MainWindow.ShowMessageAsync("提示", "必填项不能为空");
-                }
-                IsValidatedPassword = true;
-            }
-            else
-            {
-                Variables._MainWindow.ShowMessageAsync("提示", "验证失败,操作已取消");
-            }
-        }
-        ;
-        bt3.Click += (s, e) =>
+        bt3.Click += async(s, e) =>
         {
             if(RegHelper.ValidatePassword())
             {
-                IsValidatedPassword = true;
-                if(RegHelper.RegKeyExists(Registry.LocalMachine, @$"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\{newifeoc.TargetProgram}"))
+                if(await Variables._MainWindow.ShowMessageAsync("警告","确认删除该项吗?该操作不可逆"))
                 {
-                    RegHelper.DeleteRegeditKey(Registry.LocalMachine, @$"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\{newifeoc.TargetProgram}");
+                    IsValidatedPassword = true;
+                    sp.Tag = new TagConfig
+                    {
+                        ChangeKind = TagKind.Delete,
+                        ChangeConfig = newifeoc
+                    };
+                    bt2p.IsEnabled = true;
+                    RootStackPanel.Children.Remove(sp);
                 }
-                RootStackPanel.Children.Remove(sp);
             }
             else
             {
@@ -216,11 +270,27 @@ public partial class IFEOPage : UserControl
         }
         return tb;
     }
+    
 
 }
 
 public class IFEOConfig
 {
-    public string? TargetProgram { get; set; }
+    public string TargetProgram { get; set; }
     public string? ExecuteProgramArgs { get; set; } = null;
+}
+
+public class TagConfig
+{
+    public required string ChangeKind { get; set; }
+
+    public IFEOConfig OriginalConfig { get; set; }
+    public required IFEOConfig ChangeConfig { get; set; }
+}
+
+public class TagKind
+{
+    public const string Delete = "Delete";
+    public const string Add = "Add";
+    public const string Change = "Change";
 }
