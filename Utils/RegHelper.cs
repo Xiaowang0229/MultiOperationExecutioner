@@ -1,4 +1,5 @@
-﻿using Microsoft.Win32;
+﻿using Avalonia.Interactivity;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,6 +12,25 @@ namespace MultiOperationExecutioner.Utils
         {
             RegHelper.WriteRegeditString(Registry.CurrentUser, @"Software\RocketGuard", "IsStartUpCheckUpdate", bool.TrueString);
             RegHelper.WriteRegeditString(Registry.CurrentUser, @"Software\RocketGuard", "Password", "");
+        }
+
+        
+
+        public static void WriteRegeditString(RegistryKey Root, string KeyPath)
+        {
+            try
+            {
+
+                RegistryKey key = Root.CreateSubKey(KeyPath);
+                    
+                
+
+
+            }
+            catch (Exception ex)
+            {
+                Variables._MainWindow.ShowMessageAsync("写入注册表失败", $"{ex}");
+            }
         }
         public static void WriteRegeditString(RegistryKey Root, string KeyPath, string Key, string Value)
         {

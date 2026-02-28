@@ -6,10 +6,23 @@
 			 Loaded="Page_Loaded"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="MultiOperationExecutioner.IFEOPage">
-	<ScrollViewer>
-		<StackPanel Margin="10">
-			<TextBlock Text="IFEO 管理" Margin="5" FontSize="36" FontWeight="Bold"/>
-			<StackPanel Margin="10" x:Name="RootStackPanel"/> 
-		</StackPanel>
+	<ScrollViewer HorizontalScrollBarVisibility="Auto"
+					VerticalScrollBarVisibility="Auto">
+		<Grid>
+			<StackPanel Margin="10">
+				<TextBlock Text="IFEO 管理" Margin="5" FontSize="36" FontWeight="Bold"/>
+				<Button Content="创建新项" x:Name="CreateNewItem" Click="CreateNewItem_Click"/>
+				<ScrollViewer>
+					<StackPanel Margin="10" x:Name="RootStackPanel"/>
+				</ScrollViewer>
+			</StackPanel>
+			
+				
+				<StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="Tip" IsVisible="False">
+					<ui:ProgressRing Height="64" Width="64" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+					<TextBlock Text="正在加载,请稍候..." HorizontalAlignment="Center" VerticalAlignment="Center"/>
+				</StackPanel>
+			
+		</Grid>
 	</ScrollViewer>
 </UserControl>
